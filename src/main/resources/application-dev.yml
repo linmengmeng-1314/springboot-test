@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.3.187:3306/net_room?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8
+    username: net_room
+    password: net_room
+    openMulti: true
+    idle-timeout: 30000
+    multi:
+    - key: master
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.3.187:3306/net_room?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8
+      username: net_room
+      password: net_room
+      idle-timeout: 20000
+    - key: gnnetroom
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.3.187:3306/net_room?useUnicode=true&allowMultiQueries=true&characterEncoding=UTF-8
+      username: net_room
+      password: net_room
+      idle-timeout: 20000

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>申报单位信息</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<link rel="stylesheet" href="../../css/font-awesome.min.css">
+		<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+		<link rel="stylesheet" href="../../css/main.css">
+		<link rel="stylesheet" href="../../plugins/layui-v2.4.5/layui/css/layui.css" media="all">
+		<style type="text/css">
+			.layui-table-view{
+				margin-top: 0;
+			}
+		</style>
+	</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div v-show="showList">
+			<div style="margin-bottom: 10px">
+				<form class="layui-form" action="" @submit.prevent="onSubmit">
+					<span>申报单位编码：</span>
+					<div class="layui-inline">
+						<input type="text" autocomplete="off" placeholder="申报单位编码" class="layui-input" style="height:32px;" v-model="q.sbdwbm"
+						 @keyup.enter="query">
+					</div>
+					<button v-if="hasPermission('sbdwXx:saveSbdwXx')" class="layui-btn layui-btn-sm" @click="add"><i class="layui-icon layui-icon-add-1"></i>&nbsp;新增</button>
+					<button v-if="hasPermission('sbdwXx:editSbdwXx')" class="layui-btn layui-btn-sm" @click="update"><i class="layui-icon layui-icon-edit"></i>&nbsp;修改</button>
+					<button v-if="hasPermission('sbdwXx:deleteSbdwXx')" class="layui-btn layui-btn-sm" @click="del"><i class="layui-icon layui-icon-delete"></i>&nbsp;删除</button>
+					<button v-if="hasPermission('sbdwXx:querySbdwXxList')" class="layui-btn layui-btn-sm" @click="query"><i class="layui-icon layui-icon-search"></i>&nbsp;查询</button>
+				</form>
+			</div>
+			<table id="layuiTable" lay-filter="test"></table>
+	    </div>
+    
+	    <div v-show="!showList" class="panel panel-default">
+	    	<div style="background: #F2F2F2; padding: 15px;">
+				<div class="layui-card">
+					<div class="layui-card-header">{{title}}</div>
+						<div class="layui-card-body">
+							<form class="layui-form" action="">
+								<div class="layui-form-item">
+									<label class="layui-form-label"></label>
+										<div class="layui-input-block">
+											<input type="text" name="id" placeholder="请输入id" autocomplete="off" class="layui-input" v-model="sbdwXx.id">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">统一社会信用代码</label>
+										<div class="layui-input-block">
+											<input type="text" name="tyshxydm" placeholder="请输入tyshxydm" autocomplete="off" class="layui-input" v-model="sbdwXx.tyshxydm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">申报单位编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="sbdwbm" placeholder="请输入sbdwbm" autocomplete="off" class="layui-input" v-model="sbdwXx.sbdwbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位名称（注册）</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwmc" placeholder="请输入dwmc" autocomplete="off" class="layui-input" v-model="sbdwXx.dwmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位经营名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwjymc" placeholder="请输入dwjymc" autocomplete="off" class="layui-input" v-model="sbdwXx.dwjymc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位英文名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwywmc" placeholder="请输入dwywmc" autocomplete="off" class="layui-input" v-model="sbdwXx.dwywmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位英文缩写</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwywsx" placeholder="请输入dwywsx" autocomplete="off" class="layui-input" v-model="sbdwXx.dwywsx">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">经济类型</label>
+										<div class="layui-input-block">
+											<input type="text" name="jjlxdm" placeholder="请输入jjlxdm" autocomplete="off" class="layui-input" v-model="sbdwXx.jjlxdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">经济类型名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="jjlxmc" placeholder="请输入jjlxmc" autocomplete="off" class="layui-input" v-model="sbdwXx.jjlxmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">行业类别</label>
+										<div class="layui-input-block">
+											<input type="text" name="hylbdm" placeholder="请输入hylbdm" autocomplete="off" class="layui-input" v-model="sbdwXx.hylbdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">行业类别名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="hylbmc" placeholder="请输入hylbmc" autocomplete="off" class="layui-input" v-model="sbdwXx.hylbmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">开业日期</label>
+										<div class="layui-input-block">
+											<input type="text" name="kyrq" placeholder="请输入kyrq" autocomplete="off" class="layui-input" v-model="sbdwXx.kyrq">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">经营范围（主营）</label>
+										<div class="layui-input-block">
+											<input type="text" name="jyfwzy" placeholder="请输入jyfwzy" autocomplete="off" class="layui-input" v-model="sbdwXx.jyfwzy">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">经营范围（兼营）</label>
+										<div class="layui-input-block">
+											<input type="text" name="jyfwjy" placeholder="请输入jyfwjy" autocomplete="off" class="layui-input" v-model="sbdwXx.jyfwjy">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">营业执照有效期_起始日期</label>
+										<div class="layui-input-block">
+											<input type="text" name="yyzzyxqQsrq" placeholder="请输入yyzzyxqQsrq" autocomplete="off" class="layui-input" v-model="sbdwXx.yyzzyxqQsrq">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">营业执照有效期_截止日期</label>
+										<div class="layui-input-block">
+											<input type="text" name="yyzzyxqJzrq" placeholder="请输入yyzzyxqJzrq" autocomplete="off" class="layui-input" v-model="sbdwXx.yyzzyxqJzrq">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">注册资金</label>
+										<div class="layui-input-block">
+											<input type="text" name="zczb" placeholder="请输入zczb" autocomplete="off" class="layui-input" v-model="sbdwXx.zczb">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">联系电话</label>
+										<div class="layui-input-block">
+											<input type="text" name="lxdh" placeholder="请输入lxdh" autocomplete="off" class="layui-input" v-model="sbdwXx.lxdh">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位办公地址_地址编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwbgdzDzbm" placeholder="请输入dwbgdzDzbm" autocomplete="off" class="layui-input" v-model="sbdwXx.dwbgdzDzbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位办公地址_省市(县)区</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwbgdzSsxqdm" placeholder="请输入dwbgdzSsxqdm" autocomplete="off" class="layui-input" v-model="sbdwXx.dwbgdzSsxqdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位办公地址_地址名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwbgdzDzmc" placeholder="请输入dwbgdzDzmc" autocomplete="off" class="layui-input" v-model="sbdwXx.dwbgdzDzmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位注册地址_地址编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwzcdzDzbm" placeholder="请输入dwzcdzDzbm" autocomplete="off" class="layui-input" v-model="sbdwXx.dwzcdzDzbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位注册地址_省市(县)区</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwzcdzSsxqdm" placeholder="请输入dwzcdzSsxqdm" autocomplete="off" class="layui-input" v-model="sbdwXx.dwzcdzSsxqdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">单位注册地址_地址名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="dwzcdzQhnxxdz" placeholder="请输入dwzcdzQhnxxdz" autocomplete="off" class="layui-input" v-model="sbdwXx.dwzcdzQhnxxdz">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">网址</label>
+										<div class="layui-input-block">
+											<input type="text" name="wz" placeholder="请输入wz" autocomplete="off" class="layui-input" v-model="sbdwXx.wz">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_姓名</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrXm" placeholder="请输入fddbrXm" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrXm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_国籍(地区)</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrGjhdqdm" placeholder="请输入fddbrGjhdqdm" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrGjhdqdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_证件种类</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrCyzjdm" placeholder="请输入fddbrCyzjdm" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrCyzjdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_证件名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrCyzjmc" placeholder="请输入fddbrCyzjmc" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrCyzjmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_证件号码</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrZjhm" placeholder="请输入fddbrZjhm" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrZjhm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_外文姓</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrWwx" placeholder="请输入fddbrWwx" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrWwx">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_外文名</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrWwm" placeholder="请输入fddbrWwm" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrWwm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">法定代表人(负责人)_联系电话</label>
+										<div class="layui-input-block">
+											<input type="text" name="fddbrLxdh" placeholder="请输入fddbrLxdh" autocomplete="off" class="layui-input" v-model="sbdwXx.fddbrLxdh">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">联系人_公民身份号码</label>
+										<div class="layui-input-block">
+											<input type="text" name="lxrGmsfhm" placeholder="请输入lxrGmsfhm" autocomplete="off" class="layui-input" v-model="sbdwXx.lxrGmsfhm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">联系人_姓名</label>
+										<div class="layui-input-block">
+											<input type="text" name="lxrXm" placeholder="请输入lxrXm" autocomplete="off" class="layui-input" v-model="sbdwXx.lxrXm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">联系人_联系电话</label>
+										<div class="layui-input-block">
+											<input type="text" name="lxrLxdh" placeholder="请输入lxrLxdh" autocomplete="off" class="layui-input" v-model="sbdwXx.lxrLxdh">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">登记时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="djsj" placeholder="请输入djsj" autocomplete="off" class="layui-input" v-model="sbdwXx.djsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">更新时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="gxsj" placeholder="请输入gxsj" autocomplete="off" class="layui-input" v-model="sbdwXx.gxsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">注销类别</label>
+										<div class="layui-input-block">
+											<input type="text" name="zxlb" placeholder="请输入zxlb" autocomplete="off" class="layui-input" v-model="sbdwXx.zxlb">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">注销时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="zxsj" placeholder="请输入zxsj" autocomplete="off" class="layui-input" v-model="sbdwXx.zxsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">入库时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="rksj" placeholder="请输入rksj" autocomplete="off" class="layui-input" v-model="sbdwXx.rksj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">版本号</label>
+										<div class="layui-input-block">
+											<input type="text" name="versionOptimizedLock" placeholder="请输入versionOptimizedLock" autocomplete="off" class="layui-input" v-model="sbdwXx.versionOptimizedLock">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">申报人姓名</label>
+										<div class="layui-input-block">
+											<input type="text" name="sbrxm" placeholder="请输入sbrxm" autocomplete="off" class="layui-input" v-model="sbdwXx.sbrxm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">申报人证件号</label>
+										<div class="layui-input-block">
+											<input type="text" name="sbrzjh" placeholder="请输入sbrzjh" autocomplete="off" class="layui-input" v-model="sbdwXx.sbrzjh">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">申报人uid</label>
+										<div class="layui-input-block">
+											<input type="text" name="sbruid" placeholder="请输入sbruid" autocomplete="off" class="layui-input" v-model="sbdwXx.sbruid">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<button type="button" class="layui-btn" @click="saveOrUpdate">确定</button>
+										<button type="button" class="layui-btn layui-btn-primary" @click="reload">返回</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../libs/jquery.min.js"></script>
+		<script src="../../plugins/layer/layer.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../plugins/layui-v2.4.5/layui/layui.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/modules/sbdwXx/sbdwXx.js"></script>
+	</body>
+</html>

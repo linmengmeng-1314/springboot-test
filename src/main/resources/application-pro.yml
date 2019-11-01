@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-2ze775av8o3j8lx6c.mysql.rds.aliyuncs.com:3306/net_room?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    username: unified_crtify
+    password: b^Jc*si$180_3 
+    openMulti: true
+    idle-timeout: 30000
+    multi:
+    - key: master
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://rm-2ze775av8o3j8lx6c.mysql.rds.aliyuncs.com:3306/net_room?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+      username: unified_crtify
+      password: b^Jc*si$180_3
+      idle-timeout: 20000
+    - key: slave
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://rm-2ze775av8o3j8lx6c.mysql.rds.aliyuncs.com:3306/net_room?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+      username: unified_crtify
+      password: b^Jc*si$180_3
+      idle-timeout: 20000

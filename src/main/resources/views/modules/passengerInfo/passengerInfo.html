@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>旅客信息</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+		<link rel="stylesheet" href="../../css/font-awesome.min.css">
+		<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+		<link rel="stylesheet" href="../../css/main.css">
+		<link rel="stylesheet" href="../../plugins/layui-v2.4.5/layui/css/layui.css" media="all">
+		<style type="text/css">
+			.layui-table-view{
+				margin-top: 0;
+			}
+		</style>
+	</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div v-show="showList">
+			<div style="margin-bottom: 10px">
+				<form class="layui-form" action="" @submit.prevent="onSubmit">
+					<span>姓名：</span>
+					<div class="layui-inline">
+						<input type="text" autocomplete="off" placeholder="姓名" class="layui-input" style="height:32px;" v-model="q.xm"
+						 @keyup.enter="query">
+					</div>
+					<button v-if="hasPermission('passengerInfo:savePassengerInfo')" class="layui-btn layui-btn-sm" @click="add"><i class="layui-icon layui-icon-add-1"></i>&nbsp;新增</button>
+					<button v-if="hasPermission('passengerInfo:editPassengerInfo')" class="layui-btn layui-btn-sm" @click="update"><i class="layui-icon layui-icon-edit"></i>&nbsp;修改</button>
+					<button v-if="hasPermission('passengerInfo:deletePassengerInfo')" class="layui-btn layui-btn-sm" @click="del"><i class="layui-icon layui-icon-delete"></i>&nbsp;删除</button>
+					<button v-if="hasPermission('passengerInfo:queryPassengerInfoList')" class="layui-btn layui-btn-sm" @click="query"><i class="layui-icon layui-icon-search"></i>&nbsp;查询</button>
+				</form>
+			</div>
+			<table id="layuiTable" lay-filter="test"></table>
+	    </div>
+    
+	    <div v-show="!showList" class="panel panel-default">
+	    	<div style="background: #F2F2F2; padding: 15px;">
+				<div class="layui-card">
+					<div class="layui-card-header">{{title}}</div>
+						<div class="layui-card-body">
+							<form class="layui-form" action="">
+								<div class="layui-form-item">
+									<label class="layui-form-label">信息主键(不参与业务)</label>
+										<div class="layui-input-block">
+											<input type="text" name="id" placeholder="请输入id" autocomplete="off" class="layui-input" v-model="passengerInfo.id">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">外系统信息主键</label>
+										<div class="layui-input-block">
+											<input type="text" name="xxzjw" placeholder="请输入xxzjw" autocomplete="off" class="layui-input" v-model="passengerInfo.xxzjw">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">类型[1:网约房预定;2:网约房登记;3:网约房作废;4:网约房离店5:日租房预定,6:日租房登记;7:日租房作废;8:日租房离店]</label>
+										<div class="layui-input-block">
+											<input type="text" name="type" placeholder="请输入type" autocomplete="off" class="layui-input" v-model="passengerInfo.type">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">申报单位编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="sbdwbm" placeholder="请输入sbdwbm" autocomplete="off" class="layui-input" v-model="passengerInfo.sbdwbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">经营者编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="jyzbm" placeholder="请输入jyzbm" autocomplete="off" class="layui-input" v-model="passengerInfo.jyzbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">经营者名称（单位名称）</label>
+										<div class="layui-input-block">
+											<input type="text" name="jyzmc" placeholder="请输入jyzmc" autocomplete="off" class="layui-input" v-model="passengerInfo.jyzmc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">订单编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="ddbm" placeholder="请输入ddbm" autocomplete="off" class="layui-input" v-model="passengerInfo.ddbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">房屋编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="fwbm" placeholder="请输入fwbm" autocomplete="off" class="layui-input" v-model="passengerInfo.fwbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">房屋地址编码</label>
+										<div class="layui-input-block">
+											<input type="text" name="fwdzbm" placeholder="请输入fwdzbm" autocomplete="off" class="layui-input" v-model="passengerInfo.fwdzbm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">房屋经营名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="fwjymc" placeholder="请输入fwjymc" autocomplete="off" class="layui-input" v-model="passengerInfo.fwjymc">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">姓名</label>
+										<div class="layui-input-block">
+											<input type="text" name="xm" placeholder="请输入xm" autocomplete="off" class="layui-input" v-model="passengerInfo.xm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">联系电话</label>
+										<div class="layui-input-block">
+											<input type="text" name="lxdh" placeholder="请输入lxdh" autocomplete="off" class="layui-input" v-model="passengerInfo.lxdh">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">国籍(地区)</label>
+										<div class="layui-input-block">
+											<input type="text" name="gjhdqdm" placeholder="请输入gjhdqdm" autocomplete="off" class="layui-input" v-model="passengerInfo.gjhdqdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">证件种类[采用GA/T517《常用证件代码》]</label>
+										<div class="layui-input-block">
+											<input type="text" name="cyzjdm" placeholder="请输入cyzjdm" autocomplete="off" class="layui-input" v-model="passengerInfo.cyzjdm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">证件号码</label>
+										<div class="layui-input-block">
+											<input type="text" name="zjhm" placeholder="请输入zjhm" autocomplete="off" class="layui-input" v-model="passengerInfo.zjhm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">外文姓</label>
+										<div class="layui-input-block">
+											<input type="text" name="wwx" placeholder="请输入wwx" autocomplete="off" class="layui-input" v-model="passengerInfo.wwx">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">外文名</label>
+										<div class="layui-input-block">
+											<input type="text" name="wwm" placeholder="请输入wwm" autocomplete="off" class="layui-input" v-model="passengerInfo.wwm">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">相片</label>
+										<div class="layui-input-block">
+											<input type="text" name="xp" placeholder="请输入xp" autocomplete="off" class="layui-input" v-model="passengerInfo.xp">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">入住时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="rzsj" placeholder="请输入rzsj" autocomplete="off" class="layui-input" v-model="passengerInfo.rzsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">离开时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="lksj" placeholder="请输入lksj" autocomplete="off" class="layui-input" v-model="passengerInfo.lksj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">登记时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="djsj" placeholder="请输入djsj" autocomplete="off" class="layui-input" v-model="passengerInfo.djsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">取消原因</label>
+										<div class="layui-input-block">
+											<input type="text" name="qxyy" placeholder="请输入qxyy" autocomplete="off" class="layui-input" v-model="passengerInfo.qxyy">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">取消时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="qxsj" placeholder="请输入qxsj" autocomplete="off" class="layui-input" v-model="passengerInfo.qxsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">更新时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="gxsj" placeholder="请输入gxsj" autocomplete="off" class="layui-input" v-model="passengerInfo.gxsj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">入库时间</label>
+										<div class="layui-input-block">
+											<input type="text" name="rksj" placeholder="请输入rksj" autocomplete="off" class="layui-input" v-model="passengerInfo.rksj">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">版本控制</label>
+										<div class="layui-input-block">
+											<input type="text" name="versionOptimizedLock" placeholder="请输入versionOptimizedLock" autocomplete="off" class="layui-input" v-model="passengerInfo.versionOptimizedLock">
+										</div>
+								</div>
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<button type="button" class="layui-btn" @click="saveOrUpdate">确定</button>
+										<button type="button" class="layui-btn layui-btn-primary" @click="reload">返回</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../libs/jquery.min.js"></script>
+		<script src="../../plugins/layer/layer.js"></script>
+		<script src="../../libs/vue.min.js"></script>
+		<script src="../../plugins/layui-v2.4.5/layui/layui.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/modules/passengerInfo/passengerInfo.js"></script>
+	</body>
+</html>
